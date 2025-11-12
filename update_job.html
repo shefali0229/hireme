@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Job</title>
+    <style>
+        body {
+            background-image: url('frontpage.png');
+            background-size: cover;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            color: black;
+        }
+        form {
+            margin-top: 100px;
+        }
+        input {
+            padding: 10px;
+            margin: 10px;
+            width: 300px;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            color: blue;
+        }
+    </style>
+</head>
+<body>
+    <h1>Update Job</h1>
+    <form id="updateJobForm">
+        <input type="text" id="updateJobId" placeholder="Job ID" required><br>
+        <button type="button" onclick="retrieveJob()">Retrieve Job Details</button><br>
+        
+        <input type="text" id="updateJobName" placeholder="Job Name" required disabled><br>
+        <input type="text" id="updateJobExperience" placeholder="New Experience" required disabled><br>
+        <button type="button" onclick="updateJob()" disabled id="updateBtn">Update Job</button>
+    </form>
+
+    <!-- Add button to redirect to the worker dashboard -->
+    <button id="dashboardBtn">Go to Worker Dashboard</button>
+
+    <script>
+        function retrieveJob() {
+            const jobId = document.getElementById('updateJobId').value.trim();
+            
+            if (jobId) {
+                let jobList = JSON.parse(localStorage.getItem('jobs')) || [];
+                const job = jobList.find(job => job.id === jobId);
+
+                if (job) {
+                    // Populate the form with the job details
+                    document.getElementById('updateJobName').value = job.name;
+                    document.getElementById('updateJobExperience').value = job.experience;
+
+                    // Enable the fields for updating
+                    document.getElementById('updateJobName').disabled = false;
+                    document.getElementById('updateJobExperience').disabled = false;
+                    document.getElementById('updateBtn').disabled = false;
+                } else {
+                    alert('Job ID not found.');
+                }
+            } else {
+                alert('Please enter a Job ID.');
+            }
+        }
+
+        function updateJob() {
+            const jobId = document.getElementById('updateJobId').value.trim();
+            const jobName = document.getElementById('updateJobName').value.trim();
+            const jobExperience = document.getElementById('updateJobExperience').value.trim();
+
+            if (jobId && jobName && jobExperience) {
+                let jobList = JSON.parse(localStorage.getItem('jobs')) || [];
+                const jobIndex = jobList.findIndex(job => job.id === jobId);
+
+                if (jobIndex !== -1) {
+                    jobList[jobIndex].name = jobName;
+                    jobList[jobIndex].experience = jobExperience;
+                    localStorage.setItem('jobs', JSON.stringify(jobList));
+
+                    alert('Job updated successfully!');
+                    document.getElementById('updateJobForm').reset();
+                    
+                    // Disable the fields again after update
+                    document.getElementById('updateJobName').disabled = true;
+                    document.getElementById('updateJobExperience').disabled = true;
+                    document.getElementById('updateBtn').disabled = true;
+                } else {
+                    alert('Job ID not found.');
+                }
+            } else {
+                alert('Please fill in all fields.');
+            }
+        }
+
+        // Redirect to worker dashboard
+        document.getElementById("dashboardBtn").addEventListener("click", function() {
+            window.location.href = 'worker_dashboard.html'; // Redirect to worker dashboard
+        });
+    </script>
+</body>
+</html>

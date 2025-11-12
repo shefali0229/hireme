@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Job</title>
+    <style>
+        body {
+            background-image: url('frontpage.jpg');
+            background-size: cover;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            color: white;
+        }
+        form {
+            margin-top: 100px;
+        }
+        input {
+            padding: 10px;
+            margin: 10px;
+            width: 300px;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #message {
+            color: lightgreen;
+            font-weight: bold;
+        }
+        #dashboardBtn {
+            margin-top: 20px;
+            padding: 15px 30px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+        }
+        #dashboardBtn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Add Job</h1>
+    <form id="addJobForm">
+        <input type="text" id="workerName" placeholder="Worker Name" required><br>
+        <input type="text" id="jobId" placeholder="Job ID" required><br>
+        <input type="text" id="jobName" placeholder="Job Name" required><br>
+        <input type="text" id="experience" placeholder="Experience" required><br>
+        <input type="tel" id="contact" placeholder="Contact" required><br>
+        <button type="button" onclick="addJob()">Add Job</button>
+    </form>
+    <p id="message"></p>
+
+    <button id="dashboardBtn">Go to Worker Dashboard</button>
+
+    <script>
+        function addJob() {
+            const workerName = document.getElementById('workerName').value.trim();
+            const jobId = document.getElementById('jobId').value.trim();
+            const jobName = document.getElementById('jobName').value.trim();
+            const experience = document.getElementById('experience').value.trim();
+            const contact = document.getElementById('contact').value.trim();
+
+            // Retrieve jobs from localStorage, or initialize an empty array if none exist
+            let jobs = JSON.parse(localStorage.getItem('jobs')) || [];
+
+            // Check if the Job ID already exists
+            const jobExists = jobs.some(job => job.id === jobId);
+
+            if (jobExists) {
+                document.getElementById('message').textContent = "Job ID already exists. Please enter a unique Job ID.";
+                return;
+            }
+
+            // Add the new job object to the jobs array
+            jobs.push({ workerName, id: jobId, name: jobName, experience, contact });
+
+            // Store updated jobs array back in localStorage
+            localStorage.setItem('jobs', JSON.stringify(jobs));
+
+            document.getElementById('message').textContent = "Job added successfully!";
+            document.getElementById('addJobForm').reset(); // Clear the form
+        }
+
+        // Redirect to worker dashboard
+        document.getElementById("dashboardBtn").addEventListener("click", function() {
+            window.location.href = 'worker_dashboard.html'; // Redirect to worker dashboard
+        });
+    </script>
+</body>
+</html>
